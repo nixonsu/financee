@@ -19,7 +19,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: Presentation/Dockerfile
+      dockerfile: src/Presentation/Dockerfile
     container_name: financee-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
