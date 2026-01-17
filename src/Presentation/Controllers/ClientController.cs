@@ -5,7 +5,7 @@ using Presentation.Dtos;
 namespace Presentation.Controllers;
 
 [ApiController]
-[Route("clients")]
+[Route("api/clients")]
 public class ClientController(ClientService clientService) : ControllerBase
 {
     [HttpGet("")]
