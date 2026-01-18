@@ -1,9 +1,11 @@
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Dtos;
 
 namespace Presentation.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/clients")]
 public class ClientController(ClientService clientService) : ControllerBase

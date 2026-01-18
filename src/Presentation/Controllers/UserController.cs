@@ -1,9 +1,11 @@
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Dtos;
 
 namespace Presentation.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/users")]
 public class UserController(BusinessService businessService) : ControllerBase
