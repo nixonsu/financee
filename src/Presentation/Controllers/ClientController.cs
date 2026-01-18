@@ -9,9 +9,9 @@ namespace Presentation.Controllers;
 public class ClientController(ClientService clientService) : ControllerBase
 {
     [HttpGet("")]
-    public async Task<List<ClientResponse>> GetClients(Guid businessId)
+    public async Task<ActionResult<List<ClientResponse>>> GetClients(Guid businessId)
     {
         var clients = await clientService.GetClients(businessId);
-        return clients.Select(c => c.ToResponse()).ToList();
+        return Ok(clients.Select(c => c.ToResponse()).ToList());
     }
 }
