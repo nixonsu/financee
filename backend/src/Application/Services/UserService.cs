@@ -13,14 +13,12 @@ public class UserService(IUserRepository userRepository)
         {
             return user;
         }
-        else
-        {
-            // TODO: Call Auth0Service for firstname, lastname, email
-            var firstName = string.Empty;
-            var lastName = string.Empty;
-            var email = string.Empty;
-            var id = await userRepository.CreateUserAsync(subject, firstName, lastName, email);
-            return (await userRepository.GetUserAsync(id))!;
-        }
+
+        // TODO: Call Auth0Service for firstname, lastname, email
+        var firstName = string.Empty;
+        var lastName = string.Empty;
+        var email = string.Empty;
+        var id = await userRepository.CreateUserAsync(subject, firstName, lastName, email);
+        return (await userRepository.GetUserAsync(id))!;
     }
 }

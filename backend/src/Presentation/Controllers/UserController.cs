@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ public class UserController(UserService userService, BusinessService businessSer
     [HttpGet("me")]
     public async Task<ActionResult<UserResponse>> GetOrCreateUser()
     {
-        var subject = User.FindFirst("sub")?.Value;
+        var subject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(subject))
         {
