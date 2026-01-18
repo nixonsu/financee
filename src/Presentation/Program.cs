@@ -16,7 +16,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Register DI
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IBusinessRepository, BusinessRepository>();
 builder.Services.AddScoped<ClientService>();
+builder.Services.AddScoped<BusinessService>();
 
 var app = builder.Build();
 

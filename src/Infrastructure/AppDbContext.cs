@@ -6,6 +6,7 @@ namespace Infrastructure;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<ClientEntity> Clients { get; set; }
+    public DbSet<BusinessEntity> Businesses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
