@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Domain.Models;
 
 namespace Infrastructure.Entities;
@@ -5,7 +6,9 @@ namespace Infrastructure.Entities;
 public sealed record ClientEntity
 {
     public Guid Id { get; init; }
+    
     public Guid BusinessId { get; init; }
+    public BusinessEntity? Business { get; init; }
     public required string FirstName { get; init; }
     public required string LastName { get; init; }
     public required string Email { get; init; }

@@ -13,7 +13,8 @@ public class BusinessRepository(AppDbContext dbContext) : IBusinessRepository
         {
             Id = Guid.NewGuid(),
             UserId = userId,
-            Name = name
+            Name = name,
+            User = null
         };
 
         dbContext.Businesses.Add(business);

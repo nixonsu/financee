@@ -13,6 +13,23 @@ public partial class AppDbContext(DbContextOptions<AppDbContext> options) : DbCo
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+            
+        modelBuilder.Entity<BusinessEntity>()
+            .HasOne(b => b.User)
+            .WithMany(u => u.Businesses)
+            .HasForeignKey(b => b.UserId)
+            .HasPrincipalKey(b => b.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<ClientEntity>()
+            .HasOne(c => c.Business)
+            .WithMany(b => b.Clients)
+            .HasForeignKey(c => c.BusinessId)
+            .HasPrincipalKey(c => c.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserEntity>()
+            .HasIndex(u => u.Subject);
 
         // Convert all table and column names to snake_case
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
