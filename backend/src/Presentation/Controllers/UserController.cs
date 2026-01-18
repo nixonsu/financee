@@ -8,8 +8,22 @@ namespace Presentation.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/users")]
-public class UserController(BusinessService businessService) : ControllerBase
+public class UserController(UserService userService, BusinessService businessService) : ControllerBase
 {
+    [HttpGet("me")]
+    public async Task<ActionResult<UserResponse>> GetOrCreateUser()
+    {
+        var subject = User.FindFirst("sub")?.Value;
+
+        if (string.IsNullOrEmpty(subject))
+        {
+            return Unauthorized();
+        }
+
+        var user = await userService.GetOrCreateUserAsync(subject);
+        return Ok(user.ToResponse());
+    }
+
     [HttpGet("{id:guid}/businesses")]
     public async Task<ActionResult<UserBusinessesResponse>> GetUserBusinesses(Guid id)
     {

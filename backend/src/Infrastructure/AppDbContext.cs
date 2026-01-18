@@ -8,6 +8,7 @@ public partial class AppDbContext(DbContextOptions<AppDbContext> options) : DbCo
 {
     public DbSet<ClientEntity> Clients { get; set; }
     public DbSet<BusinessEntity> Businesses { get; set; }
+    public DbSet<UserEntity> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
