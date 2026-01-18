@@ -1,9 +1,10 @@
+using System.Text.RegularExpressions;
 using Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public partial class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<ClientEntity> Clients { get; set; }
     public DbSet<BusinessEntity> Businesses { get; set; }
@@ -28,10 +29,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     private static string ToSnakeCase(string input)
     {
-        var camelCasePattern = System.Text.RegularExpressions.Regex.Replace(
-            input,
-            "([a-z0-9])([A-Z])",
-            "$1_$2");
+        var camelCasePattern = AlphaNumericRegex().Replace(input, "$1_$2");
         return camelCasePattern.ToLower();
     }
+
+    [GeneratedRegex("([a-z0-9])([A-Z])")]
+    private static partial Regex AlphaNumericRegex();
 }
