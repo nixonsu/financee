@@ -8,9 +8,9 @@ function pad2(n: number): string {
 }
 
 /** `YYYY-MM-DD` for the last calendar day of the current month (local). */
-export function lastDayOfCurrentMonthLocal(): string {
+export function lastDayOfLastMonthLocal(): string {
   const n = new Date();
-  const d = new Date(n.getFullYear(), n.getMonth() + 1, 0);
+  const d = new Date(n.getFullYear(), n.getMonth(), 0);
   return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 }
 
@@ -29,7 +29,7 @@ export function dayAfterYmd(ymd: string): string {
 export function getClosePeriodDates(
   reconciliations: ReconciliationRow[],
 ): { startPeriod: string; endPeriod: string } | null {
-  const endPeriod = lastDayOfCurrentMonthLocal();
+  const endPeriod = lastDayOfLastMonthLocal();
   const startPeriod =
     reconciliations.length === 0
       ? FIRST_CLOSE_START
