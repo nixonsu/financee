@@ -1,10 +1,11 @@
 import "dotenv/config";
 import fs from "fs";
 import path from "path";
-import { chromium, type BrowserContext } from "playwright";
+import { chromium, type BrowserContext, type Page } from "playwright";
 
 const AUTH_STATE_PATH = path.resolve(".acuity-auth-state.json");
 const DOWNLOAD_DIR = path.resolve("data");
+const ERROR_SCREENSHOT_DIR = path.join(DOWNLOAD_DIR, "error-screenshots");
 const CSV_FILENAME = "clients-export.csv";
 
 const ACUITY_LOGIN_URL =
@@ -38,6 +39,39 @@ function getBackupCode(): string {
 
 function hasAuthState(): boolean {
   return fs.existsSync(AUTH_STATE_PATH);
+}
+
+async function captureErrorScreenshot(
+  page: Page,
+  step: string,
+): Promise<string | null> {
+  try {
+    fs.mkdirSync(ERROR_SCREENSHOT_DIR, { recursive: true });
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const safeStep = step.replace(/[^a-zA-Z0-9-_]/g, "_");
+    const screenshotPath = path.join(
+      ERROR_SCREENSHOT_DIR,
+      `${timestamp}-${safeStep}.png`,
+    );
+    await page.screenshot({ path: screenshotPath, fullPage: true });
+    console.error(`Error screenshot saved to ${screenshotPath}`);
+    return screenshotPath;
+  } catch (screenshotError) {
+    console.error("Failed to capture error screenshot:", screenshotError);
+    return null;
+  }
+}
+
+async function rethrowWithScreenshot(
+  page: Page,
+  step: string,
+  error: unknown,
+): Promise<never> {
+  const screenshotPath = await captureErrorScreenshot(page, step);
+  if (screenshotPath && error instanceof Error) {
+    error.message = `${error.message} (screenshot: ${screenshotPath})`;
+  }
+  throw error;
 }
 
 async function createContext() {
@@ -74,6 +108,8 @@ async function isLoggedIn(context: BrowserContext): Promise<boolean> {
     const urlContainsLogin = page.url().includes("/login");
 
     return !loggedOutDueToInactivity && !urlContainsLogin;
+  } catch (error) {
+    return rethrowWithScreenshot(page, "is-logged-in", error);
   } finally {
     await page.close();
   }
@@ -141,6 +177,8 @@ async function login(context: BrowserContext) {
 
     console.log("Login successful");
     await saveAuthState(context);
+  } catch (error) {
+    await rethrowWithScreenshot(page, "login", error);
   } finally {
     await page.close();
   }
@@ -213,6 +251,8 @@ async function downloadExport(context: BrowserContext): Promise<string> {
     console.log(`CSV downloaded to ${csvPath}`);
 
     return csvPath;
+  } catch (error) {
+    return rethrowWithScreenshot(page, "download-export", error);
   } finally {
     await page.close();
   }
